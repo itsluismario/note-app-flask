@@ -10,11 +10,8 @@
     <ul>
         {% for note, date, id in zip(notes, dates, ids) %}
         <li>
-            <b>{{ date }}</b>
-            <br>
-            <b>{{ id }} {{ note.title }}:</b> {{ note.content }}
-            <br>
-            <br>
+            (Last modified {{ date }}) | {{ id }} {{ note.title }}:{{ note.content }}
+            <a href="{{ url_for('edit_note', id=note.id)}}">edit</a>
         </li>
         {% else %}
         Aun no se han creado notas
