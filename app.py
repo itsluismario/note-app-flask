@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -19,17 +20,28 @@ class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(200), nullable=False)
+    date =  db.Column(db.DateTime, default=datetime.utcnow)
 
     # Common python method
     # It shows the value in the terminal
     def __repr__(self):
         return f"<Note {self.id}: {self.title}>"
+    
+with app.app_context():
+    db.create_all()
 
 @app.route("/")
-def hello():
-    role = "admin"
-    notes = ["note 1", "note 2", "note 3"]
-    return render_template("home.html", role=role, notes=notes)
+def home():
+    notes = Note.query.all()
+    ids = [note.id for note in notes]
+    dates = [note.date.strftime("%Y-%m-%d %H:%M:%S") for note in notes]
+    return render_template(
+        "home.html", 
+        notes=notes, 
+        ids=ids,
+        dates=dates,
+        zip=zip
+    )
 
 @app.route("/about")
 def about():
@@ -56,8 +68,18 @@ def confirmation():
 @app.route("/create-note", methods=["GET", "POST"])
 def create_note():
     if request.method == "POST":
-        note = request.form.get("note") or "No encontrado"
+        title = request.form.get("title") or ""
+        content = request.form.get("content") or ""
+        
+        note_db = Note (
+            title=title,
+            content=content
+        )
+    
+        db.session.add(note_db)
+        db.session.commit()
+
         return redirect(
-            url_for("confirmation", note=note)
+            url_for("home")
         )
     return render_template("note_form.html")

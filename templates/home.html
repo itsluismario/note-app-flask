@@ -6,18 +6,21 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Home page</h1>
-    {% if role == "admin" %}
-    <button>Add note</button>
-    {% else %}
-    <button>Request delete</button>
-    {% endif %}
-
-    <ul> 
-    {% for note in notes %}
-        <li>{{ note }}</li>
-    {% endfor %}
+    <h2>Bienvenido a Flask Notes</h2>
+    <ul>
+        {% for note, date, id in zip(notes, dates, ids) %}
+        <li>
+            <b>{{ date }}</b>
+            <br>
+            <b>{{ id }} {{ note.title }}:</b> {{ note.content }}
+            <br>
+            <br>
+        </li>
+        {% else %}
+        Aun no se han creado notas
+        {% endfor %}
     </ul>
-    
+
+    <a href="{{ url_for('create_note') }}"><b>Agregar una nueva nota</b></a>
 </body>
 </html>
