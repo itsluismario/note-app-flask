@@ -11,7 +11,7 @@ notes_bp = Blueprint("notes", __name__)
 def home():
     notes = Note.query.all()
     ids = [note.id for note in notes]
-    dates = [note.date.strftime("%Y-%m-%d %H:%M:%S") for note in notes]
+    dates = [note.created_at.strftime("%Y-%m-%d %H:%M:%S") for note in notes]
     return render_template(
         "home.html", 
         notes=notes, 
