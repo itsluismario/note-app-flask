@@ -87,7 +87,6 @@ def create_note():
 @app.route("/edit-note/<int:id>", methods=["GET","POST"])
 def edit_note(id):
     note = Note.query.get_or_404(id)
-    print(note)
     if request.method == "POST":
         title = request.form.get("title") or ""
         content = request.form.get("content") or ""
@@ -100,3 +99,12 @@ def edit_note(id):
         )
     
     return render_template("edit_note.html", note=note)
+
+@app.route("/delete-note/<int:id>", methods=["POST"])
+def delete_note(id):
+    note = Note.query.get_or_404(id)
+    db.session.delete(note)
+    db.session.commit()
+    return redirect(
+        url_for("home")
+    )
