@@ -333,6 +333,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# SQLite database files
 notes.sqlite
+*.sqlite
+*.db
 
 # End of https://www.toptal.com/developers/gitignore/api/python,flask,macos,windows,linux
