@@ -11,8 +11,8 @@
         {% for note, date, id in zip(notes, dates, ids) %}
         <li>
             (Last modified {{ date }}) | {{ id }} {{ note.title }}:{{ note.content }}
-            <a href="{{ url_for('edit_note', id=note.id)}}">edit</a>
-            <form action="{{ url_for('delete_note', id=note.id)}}" method="post">
+            <a href="{{ url_for('notes.edit_note', id=note.id)}}">edit</a>
+            <form action="{{ url_for('notes.delete_note', id=note.id)}}" method="post">
                 <button type="submit">Eliminar</button>
             </form>
         </li>
@@ -21,6 +21,6 @@
         {% endfor %}
     </ul>
 
-    <a href="{{ url_for('create_note') }}"><b>Agregar una nueva nota</b></a>
+    <a href="{{ url_for('notes.create_note') }}"><b>Agregar una nueva nota</b></a>
 </body>
 </html>
