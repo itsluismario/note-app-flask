@@ -1,34 +1,17 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
+from flask import (
+    Flask, 
+    request, 
+    render_template, 
+    redirect, 
+    url_for)
+from config import Config
+from models import Note
 
 app = Flask(__name__)
-
-import os 
-from flask_sqlalchemy import SQLAlchemy
-
-DB_FILE_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "notes.sqlite"
-)
-
-app.config["SQLALCHEMY_DATABASE_URI"]= f"sqlite:///{DB_FILE_PATH}"
-app.config["SQLALCHEMY_TRACK_NOTIFICATIONS"] = False
+app.config.from_object(Config)
 
 db = SQLAlchemy(app)
-
-class Note(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.String(200), nullable=False)
-    date =  db.Column(db.DateTime, default=datetime.utcnow)
-
-    # Common python method
-    # It shows the value in the terminal
-    def __repr__(self):
-        return f"<Note {self.id}: {self.title}>"
-    
-with app.app_context():
-    db.create_all()
 
 @app.route("/")
 def home():
@@ -42,28 +25,6 @@ def home():
         dates=dates,
         zip=zip
     )
-
-@app.route("/about")
-def about():
-    return "Note app"
-
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "POST":
-        return "POST REQUEST!!!! :)", 201
-    return "contact page"
-
-@app.route("/api/info")
-def api_info():
-    data = {
-        "name": "Notes app",
-        "version": "1.0.1"
-    }
-    return jsonify(data), 200
-
-@app.route("/confirmation")
-def confirmation():
-    return "Test"
 
 @app.route("/create-note", methods=["GET", "POST"])
 def create_note():
@@ -108,3 +69,13 @@ def delete_note(id):
     return redirect(
         url_for("home")
     )
+
+@app.route("/about")
+def about():
+    return "Note app"
+
+@app.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "POST":
+        return "POST REQUEST!!!! :)", 201
+    return "contact page"
